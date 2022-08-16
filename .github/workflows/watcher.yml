@@ -1,0 +1,22 @@
+name: Watcher
+
+on:
+  fork:
+  watch:
+    types: [started]
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Update
+        env:
+          GH_TOKEN: ${{ secrets.GH_TOKEN }}
+        run: |
+          gh api \
+            --method PATCH \
+            -H "Accept: application/vnd.github+json" \
+            /repos/${{ github.repository }} \
+            -f name='the-repository-has-${{ github.event.repository.stargazers_count }}-stars-and-${{ github.event.repository.forks }}-forks' \
+            -f description='The Repository has ${{ github.event.repository.stargazers_count }} Stars and ${{ github.event.repository.forks }} Forks'
